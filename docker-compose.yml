@@ -110,19 +110,8 @@ services:
     depends_on:
       - xml-service
 
-  # Visualization Service
-  visualization:
-    build:
-      context: ./services/visualization
-      dockerfile: Dockerfile
-    container_name: tp3-visualization
-    ports:
-      - "8080:80"
-    restart: unless-stopped
-    networks:
-      - tp3-network
-    depends_on:
-      - bi-service
+  # Visualization Service (REMOVIDO - rodar localmente se necessário)
+  # Para rodar localmente, abra services/visualization/index.html no navegador
 
 # volumes:
 #   postgres_data:

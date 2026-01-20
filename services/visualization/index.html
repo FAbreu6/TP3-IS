@@ -449,7 +449,7 @@
             <div class="logo">🚀 TP3-IS Crypto Dashboard</div>
             <div class="config-section">
                 <label for="biServiceUrl">BI Service URL</label>
-                <input type="text" id="biServiceUrl" value="http://localhost:4000" placeholder="http://localhost:4000">
+                <input type="text" id="biServiceUrl" value="" placeholder="http://localhost:4000 ou https://seu-bi-service.onrender.com">
             </div>
         </div>
     </nav>
@@ -535,11 +535,16 @@
     
     <script>
         window.addEventListener('DOMContentLoaded', () => {
+            // Tentar obter URL do BI Service de várias fontes
+            const defaultUrl = 'http://localhost:4000';
             const savedUrl = localStorage.getItem('biServiceUrl');
-            if (savedUrl) {
-                document.getElementById('biServiceUrl').value = savedUrl;
-            }
+            const envUrl = window.BI_SERVICE_URL; // Pode ser injetado via server.js se necessário
             
+            // Prioridade: URL salva > URL de ambiente > padrão
+            const initialUrl = savedUrl || envUrl || defaultUrl;
+            document.getElementById('biServiceUrl').value = initialUrl;
+            
+            // Salvar quando mudar
             document.getElementById('biServiceUrl').addEventListener('change', (e) => {
                 localStorage.setItem('biServiceUrl', e.target.value);
             });

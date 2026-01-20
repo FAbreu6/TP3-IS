@@ -42,6 +42,9 @@ services/processor/state.json
 services/crawler/build/
 services/crawler/.gradle/
 
+# Gradle Wrapper JAR (pode ser baixado automaticamente)
+services/crawler/gradle/wrapper/gradle-wrapper.jar
+
 # Generated files
 services/xml-service/src/*_pb2.py
 services/xml-service/src/*_pb2_grpc.py

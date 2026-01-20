@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: tp3-visualization
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+    # Opcional: variável para URL do BI Service (pode ser configurada no dashboard do Render)
+    # - key: BI_SERVICE_URL
+    #   value: https://seu-bi-service.onrender.com
