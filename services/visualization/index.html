@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TP3-IS - Crypto Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .config-section {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 8px;
+            padding: 10px 15px;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        
+        .config-section input {
+            width: 250px;
+            padding: 8px 12px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 6px;
+            color: #f8fafc;
+            font-size: 0.9rem;
+        }
+        
+        .config-section label {
+            display: block;
+            color: #cbd5e1;
+            font-weight: 500;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+        
+        .section {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+        }
+        
+        .section:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .section-icon {
+            font-size: 1.5rem;
+        }
+        
+        .section h2 {
+            color: #f8fafc;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .section p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .input-group label {
+            color: #cbd5e1;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            padding: 10px 12px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 8px;
+            color: #f8fafc;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .input-group textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .result h3 {
+            color: #f8fafc;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #60a5fa;
+            font-size: 1rem;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            border-radius: 8px;
+            color: #fca5a5;
+        }
+        
+        /* Crypto Grid */
+        .crypto-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .crypto-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .crypto-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+        }
+        
+        .crypto-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        
+        .crypto-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .crypto-ticker {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        
+        .crypto-type {
+            background: rgba(15, 23, 42, 0.8);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+        
+        .crypto-name {
+            font-size: 0.95rem;
+            color: #cbd5e1;
+            margin-bottom: 10px;
+        }
+        
+        .crypto-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin: 8px 0;
+        }
+        
+        .crypto-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+        
+        .crypto-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        .crypto-stat:last-child {
+            border-bottom: none;
+        }
+        
+        .crypto-stat-label {
+            color: #94a3b8;
+        }
+        
+        .crypto-stat-value {
+            color: #f8fafc;
+            font-weight: 600;
+        }
+        
+        .crypto-stat-value.positive {
+            color: #10b981;
+        }
+        
+        .crypto-stat-value.negative {
+            color: #ef4444;
+        }
+        
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.85rem;
+        }
+        
+        table thead tr {
+            background: rgba(30, 41, 59, 0.8);
+            border-bottom: 2px solid rgba(51, 65, 85, 0.5);
+        }
+        
+        table th {
+            padding: 10px;
+            text-align: left;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+        
+        table tbody tr {
+            border-bottom: 1px solid rgba(51, 65, 85, 0.3);
+        }
+        
+        table tbody tr:nth-child(even) {
+            background: rgba(30, 41, 59, 0.3);
+        }
+        
+        table tbody tr:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        table td {
+            padding: 10px;
+            color: #e2e8f0;
+        }
+        
+        /* XML Viewer */
+        .xml-viewer {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 15px;
+            max-height: 500px;
+            overflow: auto;
+        }
+        
+        .xml-viewer pre {
+            margin: 0;
+            font-size: 0.8rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #e2e8f0;
+        }
+        
+        .xml-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+        
+        .xml-toolbar h3 {
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+        
+        .xml-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .xml-actions button {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+        }
+        
+        .help-text {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(51, 65, 85, 0.8);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(71, 85, 105, 0.8);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">🚀 TP3-IS Crypto Dashboard</div>
+            <div class="config-section">
+                <label for="biServiceUrl">BI Service URL</label>
+                <input type="text" id="biServiceUrl" value="http://localhost:4000" placeholder="http://localhost:4000">
+            </div>
+        </div>
+    </nav>
+    
+    <div class="container">
+        <!-- Todas as Criptomoedas -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">💰</span>
+                <h2>Todas as Criptomoedas</h2>
+            </div>
+            <p>Visualizar todas as criptomoedas do último XML válido com informações completas (preço, market cap, volume, variação)</p>
+            <button onclick="queryAllCryptos()">Consultar</button>
+            <div id="resultAllCryptos"></div>
+        </div>
+        
+        <!-- Top Market Cap -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📈</span>
+                <h2>Top Market Cap</h2>
+            </div>
+            <p>Top N criptomoedas ordenadas por market capitalization (maior para menor)</p>
+            <div class="form-row">
+                <div class="input-group">
+                    <label>Limite (quantas mostrar)</label>
+                    <input type="number" id="topMarketCapLimit" value="10" min="1" max="100">
+                </div>
+            </div>
+            <button onclick="queryTopMarketCap()">Consultar</button>
+            <div id="resultTopMarketCap"></div>
+        </div>
+        
+        <!-- Movers -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">⚡</span>
+                <h2>Movers (Gainers)</h2>
+            </div>
+            <p>Top criptomoedas com maior variação percentual nas últimas 24h (apenas subidas)</p>
+            <div class="form-row">
+                <div class="input-group">
+                    <label>Limite</label>
+                    <input type="number" id="moversLimit" value="10" min="1" max="100">
+                </div>
+                <div class="input-group">
+                    <label>Direção</label>
+                    <select id="moversDirection">
+                        <option value="up">Gainers (Subidas)</option>
+                    </select>
+                </div>
+            </div>
+            <button onclick="queryMovers()">Consultar</button>
+            <div id="resultMovers"></div>
+        </div>
+        
+        <!-- Consulta XPath -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">🔍</span>
+                <h2>Consulta XPath</h2>
+            </div>
+            <p>Consulta XPath personalizada sobre o XML. Exemplos: <code>//Ativo/HistoricoAPI/Nome</code> (todos os nomes), <code>//Ativo[@Tipo='Cryptocurrency']/Detalhenegociacao/PrecoAtual</code> (preços de criptomoedas)</p>
+            <div class="input-group">
+                <label>XPath Query</label>
+                <textarea id="xpathQuery" placeholder="Ex: //Ativo/HistoricoAPI/Nome">//Ativo/HistoricoAPI/Nome</textarea>
+            </div>
+            <button onclick="queryXPath()">Consultar</button>
+            <div id="resultXPath"></div>
+        </div>
+        
+        <!-- Visualizar XML -->
+        <div class="section">
+            <div class="section-header">
+                <span class="section-icon">📄</span>
+                <h2>Visualizar XML</h2>
+            </div>
+            <p>Ver o conteúdo completo do último documento XML válido processado</p>
+            <button onclick="loadLatestXML()">Carregar XML</button>
+            <div id="resultXML"></div>
+        </div>
+    </div>
+    
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUrl = localStorage.getItem('biServiceUrl');
+            if (savedUrl) {
+                document.getElementById('biServiceUrl').value = savedUrl;
+            }
+            
+            document.getElementById('biServiceUrl').addEventListener('change', (e) => {
+                localStorage.setItem('biServiceUrl', e.target.value);
+            });
+        });
+        
+        function getBiServiceUrl() {
+            const url = document.getElementById('biServiceUrl').value;
+            localStorage.setItem('biServiceUrl', url);
+            return url;
+        }
+        
+        function showLoading(elementId) {
+            document.getElementById(elementId).innerHTML = '<div class="loading">Carregando</div>';
+        }
+        
+        function showError(elementId, message) {
+            document.getElementById(elementId).innerHTML = `<div class="error">${message}</div>`;
+        }
+        
+        function showCryptoList(elementId, data) {
+            const resultDiv = document.getElementById(elementId);
+            if (!data || data.length === 0) {
+                showError(elementId, 'Nenhuma criptomoeda encontrada.');
+                return;
+            }
+            
+            const formatCurrency = (val) => {
+                if (!val) return '-';
+                return new Intl.NumberFormat('pt-PT', { 
+                    style: 'currency', 
+                    currency: 'USD',
+                    maximumFractionDigits: 2
+                }).format(val);
+            };
+            
+            const formatNumber = (val) => {
+                if (!val) return '-';
+                return new Intl.NumberFormat('pt-PT').format(val);
+            };
+            
+            const formatPercent = (val) => {
+                if (val === null || val === undefined) return '-';
+                const className = val >= 0 ? 'positive' : 'negative';
+                const sign = val >= 0 ? '+' : '';
+                return `<span class="crypto-stat-value ${className}">${sign}${val.toFixed(2)}%</span>`;
+            };
+            
+            showTable(elementId, data, [
+                { key: 'ticker', label: 'Ticker' },
+                { key: 'nome', label: 'Nome' },
+                { key: 'tipo', label: 'Tipo' },
+                { key: 'preco_atual', label: 'Preço', format: 'currency', getValue: (coin) => coin.preco_atual ? parseFloat(coin.preco_atual) : null },
+                { key: 'market_cap', label: 'Market Cap', format: 'currency', getValue: (coin) => coin.market_cap ? parseFloat(coin.market_cap) : null },
+                { key: 'volume', label: 'Volume 24h', format: 'currency', getValue: (coin) => coin.volume ? parseFloat(coin.volume) : null },
+                { key: 'variacao_24h_pct', label: 'Variação 24h', format: 'percent', getValue: (coin) => coin.variacao_24h_pct ? parseFloat(coin.variacao_24h_pct) : null },
+                { key: 'supply', label: 'Supply', format: 'number', getValue: (coin) => coin.supply ? parseFloat(coin.supply) : null }
+            ]);
+        }
+        
+        function showTable(elementId, data, columns) {
+            const resultDiv = document.getElementById(elementId);
+            if (!data || data.length === 0) {
+                showError(elementId, 'Nenhum resultado encontrado.');
+                return;
+            }
+            
+            let html = `<div class="result"><h3>Resultados (${data.length})</h3><table>`;
+            html += '<thead><tr>';
+            columns.forEach(col => {
+                html += `<th>${col.label}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            
+            data.forEach((row) => {
+                html += '<tr>';
+                columns.forEach(col => {
+                    // Se tiver getValue, usar essa função, senão usar a key diretamente
+                    const value = col.getValue ? col.getValue(row) : row[col.key];
+                    let displayValue = value;
+                    
+                    if (value === null || value === undefined) {
+                        displayValue = '-';
+                    } else if (typeof value === 'number') {
+                        if (col.format === 'currency') {
+                            displayValue = new Intl.NumberFormat('pt-PT', { style: 'currency', currency: 'USD' }).format(value);
+                        } else if (col.format === 'percent') {
+                            const className = value >= 0 ? 'positive' : 'negative';
+                            const sign = value >= 0 ? '+' : '';
+                            displayValue = `<span class="crypto-stat-value ${className}">${sign}${value.toFixed(2)}%</span>`;
+                        } else if (col.format === 'number') {
+                            displayValue = new Intl.NumberFormat('pt-PT').format(value);
+                        } else {
+                            displayValue = value.toFixed(2);
+                        }
+                    }
+                    html += `<td>${displayValue}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table></div>';
+            resultDiv.innerHTML = html;
+        }
+        
+        async function queryAllCryptos() {
+            const biServiceUrl = getBiServiceUrl();
+            showLoading('resultAllCryptos');
+            
+            try {
+                const response = await fetch(`${biServiceUrl}/api/latest/coins`);
+                const data = await response.json();
+                
+                if (!response.ok || !data.success) {
+                    showError('resultAllCryptos', data.error || 'Erro ao buscar criptomoedas');
+                    return;
+                }
+                
+                showCryptoList('resultAllCryptos', data.coins || []);
+            } catch (error) {
+                showError('resultAllCryptos', error.message || 'Erro ao consultar');
+            }
+        }
+        
+        async function queryTopMarketCap() {
+            const biServiceUrl = getBiServiceUrl();
+            const limit = parseInt(document.getElementById('topMarketCapLimit').value) || 10;
+            
+            showLoading('resultTopMarketCap');
+            
+            const query = `
+                query {
+                    topMarketCap(limit: ${limit}) {
+                        ticker
+                        nome
+                        tipo
+                        marketCap
+                    }
+                }
+            `;
+            
+            try {
+                const response = await fetch(`${biServiceUrl}/graphql`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                const result = await response.json();
+                
+                if (result.errors) {
+                    showError('resultTopMarketCap', result.errors[0].message);
+                    return;
+                }
+                
+                const data = result.data?.topMarketCap || [];
+                showTable('resultTopMarketCap', data, [
+                    { key: 'ticker', label: 'Ticker' },
+                    { key: 'nome', label: 'Nome' },
+                    { key: 'tipo', label: 'Tipo' },
+                    { key: 'marketCap', label: 'Market Cap', format: 'currency' }
+                ]);
+            } catch (error) {
+                showError('resultTopMarketCap', error.message || 'Erro ao consultar');
+            }
+        }
+        
+        async function queryMovers() {
+            const biServiceUrl = getBiServiceUrl();
+            const limit = parseInt(document.getElementById('moversLimit').value) || 10;
+            const direction = document.getElementById('moversDirection').value;
+            
+            showLoading('resultMovers');
+            
+            const query = `
+                query {
+                    movers(limit: ${limit}, direction: "${direction}") {
+                        ticker
+                        nome
+                        precoAtual
+                        variacaoPct
+                    }
+                }
+            `;
+            
+            try {
+                const response = await fetch(`${biServiceUrl}/graphql`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                const result = await response.json();
+                
+                if (result.errors) {
+                    showError('resultMovers', result.errors[0].message);
+                    return;
+                }
+                
+                const data = result.data?.movers || [];
+                showTable('resultMovers', data, [
+                    { key: 'ticker', label: 'Ticker' },
+                    { key: 'nome', label: 'Nome' },
+                    { key: 'precoAtual', label: 'Preço Atual', format: 'currency' },
+                    { key: 'variacaoPct', label: 'Variação %', format: 'percent' }
+                ]);
+            } catch (error) {
+                showError('resultMovers', error.message || 'Erro ao consultar');
+            }
+        }
+        
+        async function queryXPath() {
+            const biServiceUrl = getBiServiceUrl();
+            const xpathQuery = document.getElementById('xpathQuery').value.trim();
+            
+            if (!xpathQuery) {
+                showError('resultXPath', 'Por favor, insira uma query XPath');
+                return;
+            }
+            
+            showLoading('resultXPath');
+            
+            const query = `
+                query {
+                    queryXPath(xpathQuery: "${xpathQuery.replace(/"/g, '\\"')}", status: "OK") {
+                        success
+                        count
+                        results {
+                            id
+                            result
+                            requestId
+                            dataCriacao
+                        }
+                        errorMessage
+                    }
+                }
+            `;
+            
+            try {
+                const response = await fetch(`${biServiceUrl}/graphql`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                const result = await response.json();
+                
+                if (result.errors) {
+                    showError('resultXPath', result.errors[0].message);
+                    return;
+                }
+                
+                const data = result.data?.queryXPath;
+                if (!data.success) {
+                    showError('resultXPath', data.errorMessage || 'Erro na consulta XPath');
+                    return;
+                }
+                
+                if (data.results.length === 0) {
+                    showError('resultXPath', 'Nenhum resultado encontrado');
+                    return;
+                }
+                
+                showTable('resultXPath', data.results, [
+                    { key: 'id', label: 'ID' },
+                    { key: 'result', label: 'Resultado' },
+                    { key: 'requestId', label: 'Request ID' },
+                    { key: 'dataCriacao', label: 'Data' }
+                ]);
+            } catch (error) {
+                showError('resultXPath', error.message || 'Erro ao consultar');
+            }
+        }
+        
+        async function loadLatestXML() {
+            const biServiceUrl = getBiServiceUrl();
+            showLoading('resultXML');
+            
+            try {
+                const response = await fetch(`${biServiceUrl}/api/latest/xml`);
+                const data = await response.json();
+                
+                if (!response.ok || !data.success) {
+                    showError('resultXML', data.error || 'Nenhum XML válido encontrado. Certifica-te que há documentos processados.');
+                    return;
+                }
+                
+                const xmlContent = data.xml_documento || '';
+                const documentId = data.id;
+                const requestId = data.request_id;
+                const dataCriacao = data.data_criacao;
+                const mapperVersion = data.mapper_version;
+                
+                const formattedXML = xmlContent
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/("([^"]*)")/g, '<span style="color: #fbbf24;">$1</span>')
+                    .replace(/(&lt;\/?[\w\s="']+&gt;)/g, '<span style="color: #60a5fa;">$1</span>')
+                    .replace(/(&lt;[\w]+)/g, '<span style="color: #34d399;">$1</span>')
+                    .replace(/(\/&gt;)/g, '<span style="color: #34d399;">$1</span>');
+                
+                const resultDiv = document.getElementById('resultXML');
+                resultDiv.innerHTML = `
+                    <div class="xml-viewer">
+                        <div class="xml-toolbar">
+                            <h3>Último XML Válido</h3>
+                            <div class="xml-actions">
+                                <button onclick="copyXMLToClipboard()" style="background: #10b981;">Copiar</button>
+                                <button onclick="downloadXML()" style="background: #3b82f6;">Download</button>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 15px; color: #94a3b8; font-size: 0.85rem;">
+                            <strong>ID:</strong> ${documentId} | 
+                            <strong>Request ID:</strong> ${requestId} | 
+                            <strong>Mapper:</strong> ${mapperVersion} | 
+                            <strong>Data:</strong> ${new Date(dataCriacao).toLocaleString('pt-PT')}
+                        </div>
+                        <pre><code>${formattedXML}</code></pre>
+                    </div>
+                `;
+                
+                window.currentXML = xmlContent;
+                window.currentXMLFilename = `xml_${requestId}_${new Date(dataCriacao).toISOString().split('T')[0]}.xml`;
+            } catch (error) {
+                showError('resultXML', error.message || 'Erro ao carregar XML');
+            }
+        }
+        
+        function copyXMLToClipboard() {
+            if (window.currentXML) {
+                navigator.clipboard.writeText(window.currentXML).then(() => {
+                    alert('XML copiado!');
+                }).catch(err => {
+                    alert('Erro ao copiar: ' + err.message);
+                });
+            }
+        }
+        
+        function downloadXML() {
+            if (window.currentXML) {
+                const blob = new Blob([window.currentXML], { type: 'application/xml' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = window.currentXMLFilename || 'document.xml';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        }
+    </script>
+</body>
+</html>

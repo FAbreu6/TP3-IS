@@ -1,0 +1,25 @@
+{
+  "name": "processor",
+  "version": "1.0.0",
+  "description": "Processor service that detects and processes new CSV files from Supabase Storage",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "csv-parse": "^5.5.3",
+    "dotenv": "^16.3.1",
+    "form-data": "^4.0.0",
+    "tsx": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/form-data": "^2.5.0",
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}

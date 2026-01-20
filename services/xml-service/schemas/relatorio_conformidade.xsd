@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+  <!-- Elemento raiz -->
+  <xs:element name="RelatorioConformidade">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Configuracao" type="ConfiguracaoType" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="Ativos" type="AtivosType" minOccurs="1" maxOccurs="1"/>
+      </xs:sequence>
+      <xs:attribute name="DataGeracao" type="xs:date" use="required"/>
+      <xs:attribute name="Versao" type="xs:string" use="required"/>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- Tipo: Configuracao -->
+  <xs:complexType name="ConfiguracaoType">
+    <xs:sequence>
+      <xs:element name="Regulador" type="ReguladorType" minOccurs="1" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="ValidadoPor" type="xs:string" use="required"/>
+    <xs:attribute name="Requisitante" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <!-- Tipo: Regulador -->
+  <xs:complexType name="ReguladorType">
+    <xs:attribute name="Nome" type="xs:string" use="required"/>
+    <xs:attribute name="DataUltimaAtualizacao" type="xs:date" use="required"/>
+  </xs:complexType>
+
+  <!-- Tipo: Ativos -->
+  <xs:complexType name="AtivosType">
+    <xs:sequence>
+      <xs:element name="Ativo" type="AtivoType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Tipo: Ativo -->
+  <xs:complexType name="AtivoType">
+    <xs:sequence>
+      <xs:element name="Detalhenegociacao" type="DetalhenegociacaoType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="HistoricoAPI" type="HistoricoAPIType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="IDInterno" type="xs:string" use="required"/>
+    <xs:attribute name="Ticker" type="xs:string" use="required"/>
+    <xs:attribute name="Tipo" type="xs:string" use="optional"/>
+  </xs:complexType>
+
+  <!-- Tipo: Detalhenegociacao -->
+  <xs:complexType name="DetalhenegociacaoType">
+    <xs:sequence>
+      <xs:element name="PrecoAtual" type="PrecoAtualType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Volume" type="VolumeType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Variacao24h" type="Variacao24hType" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Tipo: PrecoAtual -->
+  <xs:complexType name="PrecoAtualType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="Fonte" type="xs:string" use="required"/>
+        <xs:attribute name="Moeda" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Tipo: Volume -->
+  <xs:complexType name="VolumeType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="Negociado" type="xs:decimal" use="required"/>
+        <xs:attribute name="Unidade" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <!-- Tipo: Variacao24h -->
+  <xs:complexType name="Variacao24hType">
+    <xs:attribute name="Pct" type="xs:decimal" use="required"/>
+    <xs:attribute name="USD" type="xs:decimal" use="required"/>
+  </xs:complexType>
+
+  <!-- Tipo: HistoricoAPI -->
+  <xs:complexType name="HistoricoAPIType">
+    <xs:sequence>
+      <xs:element name="Nome" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Rank" type="xs:integer" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="MarketCap" type="MarketCapType" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="Supply" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="DataObservacao" type="xs:string" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Tipo: MarketCap -->
+  <xs:complexType name="MarketCapType">
+    <xs:simpleContent>
+      <xs:extension base="xs:decimal">
+        <xs:attribute name="Moeda" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+</xs:schema>

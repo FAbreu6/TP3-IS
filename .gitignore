@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Build outputs
+dist/
+build/
+*.class
+*.jar
+*.war
+*.ear
+*.tar
+*.zip
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime files
+services/processor/downloads/
+services/processor/state.json
+services/crawler/build/
+services/crawler/.gradle/
+
+# Generated files
+services/xml-service/src/*_pb2.py
+services/xml-service/src/*_pb2_grpc.py
+services/bi-service/dist/
+
+# Docker
+.dockerignore

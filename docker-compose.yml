@@ -1,0 +1,135 @@
+
+services:
+  # PostgreSQL Database (USANDO SUPABASE - removido PostgreSQL local)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: tp3-postgres
+  #   environment:
+  #     - POSTGRES_DB=${DB_NAME:-tp3_xml}
+  #     - POSTGRES_USER=${DB_USER:-postgres}
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+  #   networks:
+  #     - tp3-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # Crawler Service (RODANDO LOCALMENTE - removido do Docker)
+  # Para rodar localmente, execute: python services/crawler/crawler.py
+
+  # Processor Service
+  processor:
+    build:
+      context: ./services/processor
+      dockerfile: Dockerfile
+    container_name: tp3-processor
+    env_file:
+      - .env
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - BUCKET_NAME=${BUCKET_NAME:-tp3-csv}
+      - RAW_PREFIX=${RAW_PREFIX:-raw}
+      - PROCESSED_PREFIX=${PROCESSED_PREFIX:-processed}
+      - POLL_INTERVAL=${POLL_INTERVAL:-30}
+      - UPLOAD_TRANSFORMED=${UPLOAD_TRANSFORMED:-false}
+      - XML_SERVICE_URL=${XML_SERVICE_URL:-http://xml-service:5000}
+      - XML_SERVICE_SOCKET_HOST=${XML_SERVICE_SOCKET_HOST:-xml-service}
+      - XML_SERVICE_SOCKET_PORT=${XML_SERVICE_SOCKET_PORT:-7000}
+      - USE_SOCKET=${USE_SOCKET:-true}
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://processor:3001/webhook}
+      - WEBHOOK_PORT=${WEBHOOK_PORT:-3001}
+      - XML_SERVICE_TIMEOUT=${XML_SERVICE_TIMEOUT:-30000}
+      - XML_SERVICE_RETRIES=${XML_SERVICE_RETRIES:-3}
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./services/processor/downloads:/app/downloads
+      - ./services/processor/state.json:/app/state.json
+    restart: unless-stopped
+    networks:
+      - tp3-network
+
+  # XML Service
+  xml-service:
+    build:
+      context: ./services/xml-service
+      dockerfile: Dockerfile
+    container_name: tp3-xml-service
+    # env_file:
+    #   - .env  # Comentado para forçar uso da URL do pooler abaixo
+    environment:
+      # IMPORTANTE: Usando Session Pooler do Supabase (IPv4) - funciona com Docker
+      # Connection string do Session Pooler (formato correto do dashboard):
+      # postgresql://postgres.[PROJECT_REF]:[PASSWORD]@aws-1-[REGION].pooler.supabase.com:5432/postgres
+      # Project ref: zwngqsewiskvrlfjeqwf
+      # Região: eu-west-3
+      # Senha: basededados1! (codificado como %21)
+      - DATABASE_URL=postgresql://postgres.zwngqsewiskvrlfjeqwf:basededados1%21@aws-1-eu-west-3.pooler.supabase.com:5432/postgres
+      - API_PORT=${XML_SERVICE_PORT:-5000}
+      - SOCKET_PORT=${SOCKET_PORT:-7000}
+      - GRPC_PORT=${GRPC_PORT:-50051}
+      - WEBHOOK_RETRY_ATTEMPTS=${WEBHOOK_RETRY_ATTEMPTS:-3}
+    # Nota: A senha contém '!' que foi URL-encoded como '%21'
+    ports:
+      - "5000:5000"
+      - "7000:7000"
+      - "50051:50051"
+    restart: unless-stopped
+    networks:
+      - tp3-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+    # depends_on removido - não precisa mais do postgres local
+
+  # BI Service
+  bi-service:
+    build:
+      context: ./services/bi-service
+      dockerfile: Dockerfile
+    container_name: tp3-bi-service
+    env_file:
+      - .env
+    environment:
+      - PORT=${BI_SERVICE_PORT:-4000}
+      - XML_SERVICE_URL=${XML_SERVICE_URL:-http://xml-service:5000}
+    ports:
+      - "4000:4000"
+    restart: unless-stopped
+    networks:
+      - tp3-network
+    depends_on:
+      - xml-service
+
+  # Visualization Service
+  visualization:
+    build:
+      context: ./services/visualization
+      dockerfile: Dockerfile
+    container_name: tp3-visualization
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    networks:
+      - tp3-network
+    depends_on:
+      - bi-service
+
+# volumes:
+#   postgres_data:
+#     driver: local
+
+networks:
+  tp3-network:
+    driver: bridge
+    enable_ipv6: false
+

@@ -1,0 +1,69 @@
+syntax = "proto3";
+
+package xmlservice;
+
+service XmlQueryService {
+  // Executa consulta XPath e retorna resultados
+  rpc ExecuteXPath (XPathRequest) returns (XPathResponse);
+  
+  // Executa agregação XPath (count, sum, avg, etc.)
+  rpc ExecuteAggregate (AggregateRequest) returns (AggregateResponse);
+  
+  // Executa consulta XPath com filtros
+  rpc ExecuteFilter (FilterRequest) returns (FilterResponse);
+}
+
+// Request para consulta XPath simples
+message XPathRequest {
+  string xpath_query = 1;
+  string start_date = 2;
+  string end_date = 3;
+  string status = 4;
+}
+
+// Response com resultados XPath
+message XPathResponse {
+  bool success = 1;
+  int32 count = 2;
+  repeated XPathResult results = 3;
+  string error_message = 4;
+}
+
+// Resultado individual XPath
+message XPathResult {
+  int32 id = 1;
+  string result = 2;
+  string request_id = 3;
+  string data_criacao = 4;
+}
+
+// Request para agregação
+message AggregateRequest {
+  string xpath_query = 1;
+  string aggregate_func = 2; // count, sum, avg, min, max
+}
+
+// Response para agregação
+message AggregateResponse {
+  bool success = 1;
+  string result = 2;
+  string aggregate_func = 3;
+  string error_message = 4;
+}
+
+// Request para filtro complexo
+message FilterRequest {
+  string xpath_query = 1;
+  string start_date = 2;
+  string end_date = 3;
+  string status = 4;
+  repeated string filters = 5;
+}
+
+// Response para filtro
+message FilterResponse {
+  bool success = 1;
+  int32 count = 2;
+  repeated XPathResult results = 3;
+  string error_message = 4;
+}
