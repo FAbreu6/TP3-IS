@@ -4,12 +4,17 @@
   "description": "TP3-IS Visualization Service - Static HTML Dashboard",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo 'No build needed - static files'"
   },
   "keywords": ["visualization", "dashboard", "crypto"],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=18.x"
   }
 }

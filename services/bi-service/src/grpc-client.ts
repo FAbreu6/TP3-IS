@@ -129,8 +129,11 @@ export class XMLServiceClient {
    */
   async queryXPath(query: XPathQuery): Promise<XPathQueryResponse> {
     if (this.useGrpc && this.grpcClient) {
+      console.log(`[queryXPath] Using gRPC to call ExecuteXPath`);
+      console.log(`  XPath: ${query.xpath_query}`);
       return this.queryXPathGrpc(query);
     } else {
+      console.log(`[queryXPath] Using REST fallback (useGrpc=${this.useGrpc}, grpcClient=${!!this.grpcClient})`);
       // Fallback para REST se gRPC não estiver disponível
       return this.queryXPathREST(query);
     }
@@ -225,8 +228,12 @@ export class XMLServiceClient {
    */
   async aggregateXPath(query: AggregateQuery): Promise<AggregateQueryResponse> {
     if (this.useGrpc && this.grpcClient) {
+      console.log(`[aggregateXPath] Using gRPC to call ExecuteAggregate`);
+      console.log(`  XPath: ${query.xpath_query}`);
+      console.log(`  Func: ${query.aggregate_func}`);
       return this.aggregateXPathGrpc(query);
     } else {
+      console.log(`[aggregateXPath] Using REST fallback (useGrpc=${this.useGrpc}, grpcClient=${!!this.grpcClient})`);
       return this.aggregateXPathREST(query);
     }
   }

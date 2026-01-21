@@ -2,20 +2,23 @@
 
 Dashboard web para visualização de dados de criptomoedas processados pelo sistema TP3-IS.
 
-## 🚀 Deploy no Render
-
-Siga o guia completo em: [DEPLOY_RENDER.md](./DEPLOY_RENDER.md)
+## 🚀 Deploy no Vercel
 
 ### Quick Start
 
-1. **Criar conta no Render**: https://render.com
-2. **Conectar repositório Git**
-3. **Criar novo Web Service**:
-   - Root Directory: `services/visualization`
-   - Build Command: `npm install`
-   - Start Command: `npm start`
-4. **Configurar variáveis de ambiente**:
-   - `BI_SERVICE_URL`: URL do seu BI Service (ex: `https://tp3-bi-service.onrender.com`)
+1. **Criar conta no Vercel**: https://vercel.com
+2. **Conectar repositório**: `FAbreu6/TP3-IS`
+3. **Configurar projeto**:
+   - **Root Directory**: `services/visualization` ⚠️ **IMPORTANTE**
+   - **Framework Preset**: `Other` ou `Node.js`
+   - **Build Command**: `npm install`
+4. **Deploy**: Clique em "Deploy"
+
+**URL do Projeto**: https://tp3-is.vercel.app
+
+### 📖 Guia Completo
+
+Veja o guia detalhado: [DEPLOY_VERCEL.md](./DEPLOY_VERCEL.md)
 
 ## 🏃 Rodar Localmente
 
@@ -41,7 +44,7 @@ O dashboard permite configurar a URL do BI Service diretamente na interface. A U
 ```
 visualization/
 ├── index.html          # Dashboard HTML/CSS/JS
-├── server.js          # Servidor Express (para Render)
+├── server.js          # Servidor Express (serverless para Vercel)
 ├── package.json       # Dependências Node.js
-├── render.yaml        # Configuração Render (opcional)
-└── DEPLOY_RENDER.md   # Guia de deploy
+├── vercel.json        # Configuração Vercel
+└── DEPLOY_VERCEL.md   # Guia de deploy
